@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html dir="rtl" xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:jsf="http://xmlns.jcp.org/jsf"
+        xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <head>
+        <title>#{lable.print_file}</title>
+        <meta name="viewport" content="width=device-width"/>
+        <h:outputScript library="JS" name="jquery-1.3.2.min.js" />
+        <h:outputScript library="JS" name="jquery-barcode.js" />
+        <link rel="stylesheet" type="text/css" media="print" href="/LOAN_SYSTEM/faces/resources/CSS/print.css" />
+        
+    </head>
+    <body dir="#{lable.dir}">
+        <div dir="#{lable.dir}" id="content">
+         <h:graphicImage library="Images" name="logoGoesHere.png" />
+         <div id="barcode"></div>
+            <script> 
+                 var i = "#{Workflow.selected.reqNumber}";
+                 $("#barcode").barcode(i, "code128"); 
+            </script>
+            <table id="table">
+            <tbody>
+                <tr>
+                    <td>
+                        <label>التاريخ:</label>
+                    </td>
+                    <td>   
+                        <h:outputText id="date" dir="RTL" value="#{Workflow.selected.REQDate}">
+                            <f:convertDateTime type="date" locale="ar" pattern="YYYY/MM/dd" timeZone="Asia/Riyadh" />
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>رقم العميل: </label>
+                    </td>
+                    <td>
+                        <h:outputText id="subject" dir="RTL" value="#{Workflow.selected.reqClientId.clientNumber}" >
+                            <f:convertNumber pattern="00000000000" />
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>رقم الهويه: </label>
+                    </td>
+                    <td>
+                        <h:outputText  dir="RTL" value="#{Workflow.selected.reqClientGovId}" >
+                            <f:convertNumber pattern="0000000000" />
+                        </h:outputText>   
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>رقم الطلب: </label>
+                    </td>
+                    <td>
+                        <h:outputText  dir="RTL" value="#{Workflow.selected.reqNumber}" >
+                            <f:convertNumber pattern="00000000000" />
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>حالة الطلب: </label>
+                    </td>
+                    <td>
+                        <h:outputText  dir="RTL" value="#{Workflow.selected.reqStatusId.statusDescription}" />
+                            
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+        </div>
+        <script>
+            window.onload = goToPrintInfo();
+            function goToPrintInfo(){
+              window.print();
+            }
+            
+        </script>
+    </body>
+</html>

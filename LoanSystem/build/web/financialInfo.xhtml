@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                 >
+<div id="financailInfoPanel" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.financailInfo}
+                </h3>
+            </div>
+            <div class="panel-body" >
+                <h:panelGroup rendered="#{not Workflow.isClientFI}">
+                    #{lable.notLiable}
+                </h:panelGroup>
+               
+                    <h:form id="clinetFinancialDataTableForm">
+                         <h:panelGroup rendered="#{Workflow.isClientFI}" id="clinetFinancialDataTable">
+                        <h:dataTable class="table1" cellpadding="4" cellspacing="4" value="#{loanerInfoBean.items}" var="tmpItem" width="100%" rowClasses="odd_row, even_row">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanerName}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.loanerName}"
+                                              class="label-#{lable.dir}}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanedAmount}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.amount}"
+                                              class="label-#{lable.dir}}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.duration}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.duration}"
+                                              class="label-#{lable.dir}}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.remainingAmount}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.remaining}"
+                                              class="label-#{lable.dir}}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.installment}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.installment}"
+                                              class="label-#{lable.dir}}" />
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText dir="#{lable.dir}" 
+                                                  value="#{lable.paidDoc}" />
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/download.png" 
+                                                 rendered="#{tmpItem.paidPaper != null}"
+                                                 action="#{loanerInfoBean.showOrignalPaidFile()}">
+                                    <f:ajax execute="@this" onevent="showDownloadedPaidPaperFile" />
+                                </h:commandButton>
+                            </h:column>
+                        </h:dataTable>
+                            <center>
+                        <h:panelGrid columns="3" cellpadding="10" >
+
+                            <h:commandButton image="/faces/resources/Images/right.png" actionListener ="#{loanerInfoBean.previous()}" rendered="#{loanerInfoBean.pagination.hasPreviousPage}">  
+                            <f:ajax execute="@form" render="clinetFinancialDataTable" onevent="showLoading" />
+                            </h:commandButton>
+
+                            <h:commandButton image="/faces/resources/Images/left.png" actionListener="#{loanerInfoBean.next()}" rendered="#{loanerInfoBean.pagination.hasNextPage}">  
+                            <f:ajax execute="@form" render="clinetFinancialDataTable" onevent="showLoading" />
+                            </h:commandButton>
+
+
+                        </h:panelGrid>
+                            </center>
+                       </h:panelGroup>
+                  </h:form>
+                
+            </div>
+</div>
+    
+    <!-- View Request Paid Doc  -->
+                            <h:panelGroup id="paidPaperDownloadView">
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='paidPaperDownloadedFile' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading8" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" >
+                                 <iframe name="requestPaidPaperDocView" height="500" width="900" ></iframe>
+                                    <form action="/LOAN_SYSTEM/showPaidFile" target="requestPaidPaperDocView" >
+                                         <input type="submit"
+                                                id="refreshPaidPaperFileBtn"
+                                                value="#{lable.refresh}"
+                                                class="hideMe"
+                                                />
+                                     </form>
+                                 <h:form>
+                                     <h:commandButton value="#{lable.download}"
+                                                      action="#{loanerInfoBean.downloadFile()}"
+                                                      class="btn btn-success btn-lg btn-block"
+                                                      />
+                                 </h:form>
+                                     
+                                 <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeDownloadedPaidPaperFileView" />
+                                       </h:commandButton>
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+                            </h:panelGroup>
+</ui:composition>

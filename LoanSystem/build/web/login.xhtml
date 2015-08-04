@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                template="./DArchTemplate.xhtml">
+    
+     
+     
+    <ui:define name="title">
+        Login Screen
+    </ui:define>
+    <ui:define name="content"> 
+        <div id="cont2" class="container" dir="#{lable.dir}">
+            
+                
+                 <!-- USER LOGIN FORM -->
+                 
+                 <h:form id="loginFrm" class="form-signin" rendered="#{not loginManager.showNewPasswordForm and not loginManager.forgotPassword}">
+                     <h:outputScript library="JS" name="fixes.js" target="head" />
+                     <h2 class="heading">#{lable.login_heading}</h2>
+                     <h:inputText  value="#{loginManager.userName}" 
+                                   class="form-control input-sm" 
+                                   id="userNameField"
+                                   validator="#{loginManager.validatUserName}"
+                                   p:placeholder="#{lable.login_user_placeholder}"
+                                   />
+                     <h:inputSecret value="#{loginManager.password}" 
+                                    class="form-control input-sm" 
+                                    validator="#{loginManager.validatPassword}"
+                                    p:placeholder="#{lable.login_password_placeholder}"
+                                    />
+                     <h:commandLink action="#{loginManager.displayNewPasswordForm()}"
+                                    value ="#{lable.renewPassword}" >
+                         <f:ajax execute="@this" render="@all" />
+                     </h:commandLink>   
+                     <br /> 
+                     <h:commandLink action="#{loginManager.displayForgotPasswordForm()}"
+                                    value="#{lable.forgotMyPassword}" >
+                         <f:ajax execute="@this" render="@all"/>
+                     </h:commandLink>
+                                   
+                     <h:commandButton value="#{lable.login_btn}!" action="#{loginManager.login()}" class="btn btn-lg btn-primary btn-block">
+                         <f:ajax execute="loginFrm" render="@all" onevent="showLoadingAll" />
+                     </h:commandButton>
+                    
+                </h:form>
+                 
+                     <h:panelGroup id="passwordForms" >
+                         <h:form id="newPasswordForm" class="form-signin" rendered="#{loginManager.showNewPasswordForm and not loginManager.forgotPassword}">
+                         <h:outputScript library="JS" name="fixes.js" target="head" />
+                         <h:outputLabel value="#{lable.userName}" />
+                         <h:inputText value="#{loginManager.userName}"
+                                      validator="#{loginManager.validateUserName}"
+                                      class="form-control"
+                                      />
+
+                         <h:outputLabel value="#{lable.oldPassword}" />
+                         <h:inputText value="#{loginManager.oldPassword}"
+                                      validator="#{loginManager.validateOldPassword}"
+                                      class="form-control"
+                                      p:type="password"/>
+
+                         <h:outputLabel value="#{lable.newPassword}" />
+                         <h:inputText value="#{loginManager.prePassword}"
+                                      validator="#{loginManager.validatePrePassword}"
+                                      class="form-control"
+                                      p:type="password"/>
+                         <h:commandButton value="#{lable.updatePassword}!" rendered="#{loginManager.renewPassword}" action="#{loginManager.updatePassword()}" class="btn btn-lg btn-primary btn-block">
+                             <f:ajax execute="newPasswordForm" render=":passwordForms" onevent="showLoadingAll" />
+                         </h:commandButton>
+
+                     </h:form> 
+                 </h:panelGroup> 
+                 
+                 <h:panelGroup id="forgotPassword">
+                     <h:form id="forgotPasswordForm" class="form-signin" rendered="#{loginManager.forgotPassword}">
+                         <h:outputScript library="JS" name="fixes.js" target="head" />
+                         <h:outputLabel value="#{lable.userName}" />
+                         <h:inputText value="#{loginManager.userName}"
+                                      validator="#{loginManager.validateUserName}"
+                                      class="form-control"
+                                      />
+                         <br />
+                         <h:commandButton action="#{loginManager.forgotMyPassword()}"
+                                        value="#{lable.reset}"
+                                        class="btn btn-lg btn-primary btn-block">
+                         <f:ajax execute="forgotPasswordForm" render="@all"/>
+                     </h:commandButton>
+                     </h:form>
+                 </h:panelGroup>
+                 
+                 
+                 
+                 <h:panelGroup id="loginMessage">
+                    <h:panelGroup rendered="#{not empty facesContext.messageList}">
+                        <div dir="#{lable.dir}" class="panel panel-default" id="orderMessages" >
+                             <div class="panel-heading">
+                                <h3 class="panel-title">#{lable.system_name}</h3>
+                            </div>
+                            <div class="panel-body"  >
+                                <h:messages id="loginMessages"  errorStyle="color:red" />
+                                <br />
+                                <center>
+                                <a href="#" class="btn-info" onclick="closeMe()"> #{lable.close} </a>
+                                </center>
+                                <br />
+                            </div>
+                        </div>
+                        <div id='orderBackground' style="visibility: visible;" ></div>
+                    </h:panelGroup>
+                 </h:panelGroup>  
+                
+            
+        </div>
+    </ui:define>
+    
+</ui:composition>
+
+

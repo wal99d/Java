@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                 >
+
+<div id="divertPanel1" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.personal_info}
+                </h3>
+            </div>
+            <div class="panel-body" >
+                <h:panelGrid columns="4" cellpadding="4" cellspacing="4" width="80%" >
+                    <h:outputLabel value="#{lable.client_name}" 
+                                   />
+                    <h:outputLabel value="#{Workflow.clientPI.name}"
+                                   style="color: blue;"
+                                 />
+                    <h:outputLabel value="#{lable.client_sex}" 
+                                   />
+                    <h:outputLabel value="#{Workflow.genderString}"
+                                    style="color: blue;"  
+                                     />
+                    
+                    <h:outputLabel value="#{lable.client_job}" 
+                                   />
+                    <h:outputLabel value="#{Workflow.jobString}"
+                                    style="color: blue;"  
+                                     />
+                    <h:outputLabel value="#{lable.job3}"
+                                   rendered="#{Workflow.clientPI.job.equals('3')}" />
+                    <h:outputLabel  
+                                 value="#{Workflow.clientPI.otherJob}"
+                                 style="color: blue;"
+                                 rendered="#{Workflow.clientPI.job.equals('3')}"
+                                 />
+                    
+                    
+                    <h:outputLabel value="#{lable.gov_id}"/>
+                    <h:outputLabel value="#{Workflow.clientPI.govId}"
+                                  style="color: blue;"
+                                 />
+                    <h:outputLabel value="#{lable.issuer}" />
+                    <h:outputLabel value="#{Workflow.clientPI.idIssuer}"
+                                   style="color: blue;"
+                                   />
+                    
+                    
+                    <h:outputLabel value="#{lable.issueDate}" />
+                    <h:outputLabel value="#{Workflow.clientPI.idIssueDate}"
+                                   style="color: blue;">
+                        <f:convertDateTime type="date" locale="ar" pattern="YYYY/MM/dd" timeZone="Asia/Riyadh" />
+                    </h:outputLabel>
+                    <h:outputLabel value="#{lable.issueDateEnd}" />
+                    <h:outputLabel value="#{Workflow.clientPI.idIssueExpireDate}"
+                                   style="color: blue;">
+                        <f:convertDateTime type="date" locale="ar" pattern="YYYY/MM/dd" timeZone="Asia/Riyadh" />
+                    </h:outputLabel>
+                    
+                    
+                    <h:outputLabel value="#{lable.birthDayDate}" />
+                    <h:outputLabel value="#{Workflow.clientPI.birthday}"
+                                   style="color: blue;">
+                        <f:convertDateTime type="date" locale="ar" pattern="YYYY/MM/dd" timeZone="Asia/Riyadh" />
+                    </h:outputLabel>
+                    
+                    <h:outputLabel value="#{lable.material_status}"/>
+                    <h:outputLabel value="#{Workflow.statusString}" 
+                                   style="color: blue;" />
+                    <h:outputLabel value="#{lable.other}"
+                                   rendered="#{Workflow.clientPI.status.equals('3')}"/>
+                    <h:outputLabel value="#{Workflow.clientPI.otherStatus}"
+                                   style="color: blue;"
+                                   rendered="#{Workflow.clientPI.status.equals('3')}"/>
+                    
+                    <h:outputLabel value="#{lable.dependentsNumber}" />
+                    <h:outputLabel value="#{Workflow.clientPI.dependent}"
+                                   style="color: blue;"/>
+                    <h:outputLabel value="#{lable.crNumber}" />
+                    <h:outputLabel value="#{Workflow.clientPI.crId}" 
+                                   style="color: blue;"/>
+                    
+                    <h:outputLabel value="#{lable.crIssuer}" />
+                    <h:outputLabel value="#{Workflow.clientPI.crIssuer}"
+                                   style="color: blue;"/>
+                    <h:outputLabel value="#{lable.issueDate}" />
+                    <h:outputLabel value="#{Workflow.clientPI.crIssueDate}"
+                                   style="color: blue;">
+                        <f:convertDateTime type="date" locale="ar" pattern="YYYY/MM/dd" timeZone="Asia/Riyadh" />
+                    </h:outputLabel>
+                    
+                    <h:outputLabel value="#{lable.address}" />
+                    <h:outputLabel value="#{Workflow.clientPI.pobox}"
+                                   style="color: blue;"/>
+                    <h:outputLabel value="#{lable.city}" />
+                    <h:outputLabel value="#{Workflow.clientPI.city}"
+                                   style="color: blue;"/>
+                    
+                    <h:outputLabel value="#{lable.postalCode}" />
+                    <h:outputLabel value="#{Workflow.clientPI.postalcode}" 
+                                   style="color: blue;"/>
+                    <h:outputLabel value="#{lable.wassel}" />
+                    <h:outputLabel value="#{Workflow.clientPI.wassel}"
+                                   style="color: blue;"/>
+                    
+                    <h:outputLabel value="#{lable.tel}" />
+                    <h:outputLabel value="#{Workflow.clientPI.tel}" 
+                                   style="color: blue;"/>
+                    <h:outputLabel value="#{lable.mobile}" />
+                    <h:outputLabel value="#{Workflow.clientPI.mobile}"
+                                   style="color: blue;">
+                        <f:convertNumber maxIntegerDigits="10" pattern="0000000000" />
+                    </h:outputLabel>
+                    
+                    <h:outputLabel value="#{lable.resedentType}" />
+                    <h:outputLabel value="#{Workflow.resedentTypeString}" 
+                                   style="color: blue;"/>
+                    <h:panelGroup id="rentAmount">
+                        <h:panelGrid  columns="2" >
+                            <h:outputLabel value="#{lable.rentAmount}"
+                                           rendered="#{Workflow.clientPI.resedentType.equals('2')}"  />
+                            <h:outputLabel value="#{Workflow.clientPI.resedentRentAmount}" 
+                                           rendered="#{Workflow.clientPI.resedentType.equals('2')}"
+                                            style="color: blue;" />
+
+                            
+                            
+                        </h:panelGrid>
+                        
+                    </h:panelGroup>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.city}" />
+                    <h:outputLabel value ="#{Workflow.clientPI.resedentCity}"
+                                   style="color: blue;"/>
+                    
+                    <h:outputLabel value="#{lable.district}" />
+                    <h:outputLabel value="#{Workflow.clientPI.resedentDistrict}" 
+                                   style="color: blue;" />
+                    
+                    
+                    <h:outputLabel value="#{lable.street}" />
+                    <h:outputLabel value="#{Workflow.clientPI.resedentStreet}" 
+                                   style="color: blue;" />
+                    
+                    <h:outputLabel value="#{lable.homeNumber}" />
+                    <h:outputLabel value="#{Workflow.clientPI.resedentNumber}"
+                                   style="color: blue;" />
+                    
+                </h:panelGrid>
+                
+            </div>
+        </div>
+    
+</ui:composition>

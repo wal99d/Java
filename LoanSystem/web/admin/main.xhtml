@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html" 
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough" 
+                xmlns:jsf="http://xmlns.jcp.org/jsf" 
+                template="../DArchTemplate.xhtml">
+    <ui:define name="title">
+        #{lable.title}
+    </ui:define>
+    <ui:define name="content"> 
+        
+        <div id="container" class="container">
+            <div id="starter" class="starter-template" dir="#{lable.dir}">
+                <!-- MAIN INDEX -->
+                <ul class="nav nav-tabs-#{lable.dir}" id="mainTab">
+                     
+                     
+                    
+                    <li id="li2" class="active"><a href="#users" data-toggle="tab">
+                              <h:graphicImage name="group.png" library="Images" />
+                              #{lable.users}
+                      </a></li>
+                    <li id="li2" ><a href="#devices" data-toggle="tab">
+                              <h:graphicImage name="print.png" library="Images" />
+                              #{lable.devices}
+                      </a></li>
+                      
+                </ul>
+              
+                <div class="tab-content" id="tabContents" >
+                    
+                    
+                    
+                    <div class="tab-pane fade in active" id="users"> 
+                        <ui:include src="./users.xhtml" />
+                    </div>
+                    
+                    <div class="tab-pane fade in" id="devices"> 
+                        <ui:include src="./devices.xhtml" />
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#mainTab a').click(function (e) {
+              e.preventDefault()
+              $(this).tab('show')
+            });
+            
+            $(function() { 
+          //for bootstrap 3 use 'shown.bs.tab' instead of 'shown' in the next line
+          $('a[data-toggle="tab"]').on('shown', function (e) {
+            //save the latest tab; use cookies if you like 'em better:
+            localStorage.setItem('lastTab', $(e.target).attr('id'));
+          });
+
+          //go to the latest tab, if it exists:
+          var lastTab = localStorage.getItem('lastTab');
+          if (lastTab) {
+              $('#'+lastTab).tab('show');
+          }
+        });
+        </script>
+       
+        <!--ui:include src="../allModals.xhtml" /-->
+        
+    </ui:define>
+    
+</ui:composition>
+
+
+

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:form id="mainDashborad">
+        <div id="dashboardPanel1" class="panel panel-default">
+         <div id="dashboardHeadingPanel1" class="panel-heading">
+            <h3 id="h3Dashboard1" class="panel-title">#{lable.stats}
+            </h3>
+         </div>
+             
+        <div id="dashboardBody1" class="panel-body">
+            <h:panelGroup id="mainDashboardPanelGroup" >
+                <!-- Charts Grid -->
+                <center>
+                <h:panelGrid columns="2" cellpadding="10">
+                    <h:column>
+                        <div id="saderdashboardPanel1" class="panel panel-default">
+                             <div id="saderdashboardHeadingPanel1" class="panel-heading">
+                                <h3 id="h3SaderDashboard1" class="panel-title">#{lable.orderStatus}
+                                    &#160;&#160;&#160;&#160;
+                                    <h:commandButton image="/faces/resources/Images/refresh.png" dir="#{lable.dir}" id="refreshStatusDashboard" onclick="getStatusChart()"  >
+                                        <f:ajax event="click" onevent="showLoading" />
+                                    </h:commandButton>
+                                </h3>
+                              </div>
+                            
+                            <div id="statusBody" class="panel-body">
+                                
+                                    <svg class="statusChart"></svg>
+                                    
+                            </div>
+                            
+                            
+                              
+                        </div>
+                    </h:column>
+                    <h:column>
+                        <div id="saderdashboardPanel1" class="panel panel-default">
+                             <div id="saderdashboardHeadingPanel1" class="panel-heading">
+                                <h3 id="h3SaderDashboard1" class="panel-title">#{lable.employeeOrders}
+                                    &#160;&#160;&#160;&#160;
+                                    <h:commandButton image="/faces/resources/Images/refresh.png" dir="#{lable.dir}" id="refreshEmployeeDashboard" onclick="getEmployeeChart()"  >
+                                        <f:ajax event="click" onevent="showLoading" />
+                                    </h:commandButton>
+                                </h3>
+                              </div>
+                            
+                            <div id="employeeReport" class="panel-body">
+                                
+                                    <svg class="employeeChart"></svg>
+                               
+                            </div>
+                            
+                            
+                              
+                        </div>
+                    </h:column>
+                </h:panelGrid> 
+                </center>
+                
+                
+                
+            </h:panelGroup>  
+        </div>
+        </div>
+    </h:form>
+    <script>
+      //Used for Testing purpose
+      function displayResult(data){
+          alert(JSON.stringify(data));
+      }  
+      function getStatusChart(){
+          //alert("Hi");
+        $.ajax({
+                    url: '/LOAN_SYSTEM/webresources/Dashboard/',
+                    type: 'GET',
+                    dataType: "json",
+                    success: chartStatus
+                });  
+     
+      }
+        function chartStatus(JSONData){ 
+            //alert(JSONData);
+            
+                var width = 520,
+                    height = 400;
+            
+                var data = JSONData;
+                nv.addGraph(function() {
+                   var chartS = nv.models.pieChart()
+                        .x(function(d) { return d.action })
+                        .y(function(d) { return d.value })
+                        .showLabels(false)
+                        .width(width)
+                        .height(height);
+
+                      d3.select(".statusChart")
+                          .datum(JSONData)
+                        .transition().duration(1200)    
+                         .attr('width', width)
+                         .attr('height', height)
+                         .call(chartS);
+
+                   return chartS;
+                 }); 
+           
+         }
+         
+         function getEmployeeChart(){
+          //alert("Hi");
+        $.ajax({
+                    url: '/LOAN_SYSTEM/webresources/Employee/',
+                    type: 'GET',
+                    dataType: "json",
+                    success: chartEmployee
+                });  
+     
+      }
+        function chartEmployee(JSONData){ 
+            //alert(JSONData);
+            
+                var width = 320,
+                    height = 400;
+            
+                var data = JSONData;
+                nv.addGraph(function() {
+                   var chartS = nv.models.pieChart()
+                        .x(function(d) { return d.employeeName })
+                        .y(function(d) { return d.value })
+                        .showLabels(true)
+                        .width(width)
+                        .height(height);
+
+                      d3.select(".employeeChart")
+                          .datum(JSONData)
+                        .transition().duration(1200)    
+                         .attr('width', width)
+                         .attr('height', height)
+                         .call(chartS);
+
+                   return chartS;
+                 }); 
+           
+         }
+         
+        function type(d) {
+          d.value = +d.value; // coerce to number
+          return d;
+        }
+        function refreshAll(){
+            alert("Hi");
+           document.getElementById('mainDashborad:refreshStatusDashboard').click();
+           document.getElementById('mainDashborad:refreshEmployeeDashboard').click();
+             
+        }
+        //window.onload = refreshAll();
+        //window.onblur =refreshAll();
+    </script>
+</ui:composition>

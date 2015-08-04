@@ -1,0 +1,130 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                 >
+<div id="financailInfoPanel" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.financailInfo}
+                </h3>
+            </div>
+            <div class="panel-body" >
+                <h:panelGroup rendered="#{not archiveBean.isClientFI}">
+                    #{lable.notLiable}
+                </h:panelGroup>
+                 <h:form id="clinetFinancialDataTableArchivedForm">
+                <h:panelGroup rendered="#{archiveBean.isClientFI}" id="clinetFinancialDataTableArchived">
+                   
+                        <h:dataTable class="table1" cellpadding="4" cellspacing="4" value="#{loanerInfoArchivedBean.items}" var="tmpItem" width="100%" rowClasses="odd_row, even_row">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanerName}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.loanerName}"
+                                              class="label-#{lable.dir}}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanedAmount}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.amount}"
+                                              class="label-#{lable.dir}}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.duration}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.duration}"
+                                              class="label-#{lable.dir}}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.remainingAmount}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.remaining}"
+                                              class="label-#{lable.dir}}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.installment}" />
+                                </f:facet>
+                                
+                                <h:outputLabel value="#{tmpItem.installment}"
+                                              class="label-#{lable.dir}}" />
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText dir="#{lable.dir}" 
+                                                  value="#{lable.paidDoc}" />
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/download.png" 
+                                                 rendered="#{tmpItem.paidPaper != null}"
+                                                 action="#{loanerInfoArchivedBean.showOrignalPaidArchivedFile()}">
+                                    <f:ajax execute="@this" onevent="showDownloadedArchivedPaidFile" />
+                                </h:commandButton>
+                            </h:column>
+                            
+                        </h:dataTable>
+                            <center>
+                        <h:panelGrid columns="3" cellpadding="10" >
+
+                            <h:commandButton image="/faces/resources/Images/right.png" actionListener ="#{loanerInfoArchivedBean.previous()}" rendered="#{loanerInfoArchivedBean.pagination.hasPreviousPage}">  
+                            <f:ajax execute="@form" render="clinetFinancialDataTableArchived" onevent="showLoading" />
+                            </h:commandButton>
+
+                            <h:commandButton image="/faces/resources/Images/left.png" actionListener="#{loanerInfoArchivedBean.next()}" rendered="#{loanerInfoArchivedBean.pagination.hasNextPage}">  
+                            <f:ajax execute="@form" render="clinetFinancialDataTableArchived" onevent="showLoading" />
+                            </h:commandButton>
+
+
+                        </h:panelGrid>
+                            </center>
+                       </h:panelGroup>
+                  </h:form>
+                
+            </div>
+</div>
+                     <!-- View Request Paid Doc  -->
+                            <h:panelGroup id="paidPaperArchivedView">
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='paidArchivedDownloadedFile' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading8" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" id="showArchivedPaidFile" >
+                                 <iframe name="requestPaidArchivedDocView" height="500" width="900" ></iframe>
+                                    <form action="/LOAN_SYSTEM/showPaidArchivedFile" target="requestPaidArchivedDocView" >
+                                         <input type="submit"
+                                                id="refreshPaidArchivedFileBtn"
+                                                value="#{lable.refresh}"
+                                                class="hideMe"
+                                                />
+                                     </form>
+                                 <h:form>
+                                     <h:commandButton value="#{lable.download}"
+                                                      action="#{loanerInfoArchivedBean.downloadFile()}"
+                                                      class="btn btn-success btn-lg btn-block"
+                                                      />
+                                 </h:form>
+                                     
+                                 <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeDownloadedArchivedPaidFileView" />
+                                       </h:commandButton>
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+                            </h:panelGroup>
+</ui:composition>

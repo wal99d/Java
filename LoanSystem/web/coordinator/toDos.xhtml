@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                 >
+    <h:outputScript library="JS" name="fixes.js" target="head" />
+    
+    <h:form id="toDosForm"> 
+        
+        
+    <div id="toDosPanel" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">#{lable.main_toDos}
+                <span class="badge badge-info"> 
+                    <h:outputText id="count" value="#{Workflow.items.rowCount}" />
+                </span>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <h:commandButton image="/faces/resources/Images/refresh.png" dir="#{lable.dir}" id="refreshMe" action="#{Workflow.refreshTable()}">
+                    <f:ajax render=":toDosForm count" onevent="showLoading" />
+                </h:commandButton>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <h:commandButton image="/faces/resources/Images/print.png" dir="#{lable.dir}" onclick="printMe('toDosForm:toDosTable')">
+                    <f:ajax execute="@this" event="click" onevent="showLoading" />
+                </h:commandButton>
+                &nbsp; &nbsp; &nbsp; &nbsp;
+                <h:commandButton image="/faces/resources/Images/table.png" dir="#{lable.dir}" onclick="exportToCSV('toDosForm:toDosTable')">
+                    <f:ajax execute="@this" event="click" onevent="showLoading" />
+                </h:commandButton>
+            </h3>
+        </div>
+        <div id="toDosBody" class="panel-body">
+            
+            <h:panelGroup rendered="#{Workflow.items.rowCount > 0}" id="toDosContent" >
+                <center>
+                    <h:dataTable id="toDosTable" class="toDosTable" value="#{Workflow.items}" var="item" rules="all" border="0" cellpadding="2" cellspacing="0" rowClasses="odd_row, even_row" >
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.requestNumber}" />
+                        </f:facet>
+                        <h:outputText value="#{item.reqNumber}">
+                            <f:convertNumber pattern="00000000000" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.reqDate}" />
+                        </f:facet>
+                        <h:outputText value="#{item.REQDate}">
+                            <f:convertDateTime type="date" locale="ar" pattern="YYYY/MM/dd" timeZone="Asia/Riyadh" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.clientNumber}" />
+                        </f:facet>
+                        <h:outputText value="#{item.reqClientId.clientNumber}" >
+                            <f:convertNumber pattern="00000000000" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText dir="#{lable.dir}" value="#{lable.orignalDoc}" />
+                        </f:facet>
+                        <h:commandButton image="/faces/resources/Images/download.png" action="#{Workflow.showOrignalFile()}">
+                            <f:ajax execute="@this" onevent="showDownloadedFile" />
+                        </h:commandButton>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.toPay}" />
+                        </f:facet>
+                        <h:commandButton image="/faces/resources/Images/money.png" 
+                                         action="#{Workflow.processItem()}"
+                                         rendered="#{item.reqStatusId.statusId == 5 or item.reqStatusId.statusId == 10}">
+                            <f:ajax execute="@this" render=":processPaymentGroup" onevent="doProcessPayment" />  
+                        </h:commandButton>
+
+                    </h:column>
+                    <h:column >
+                        <f:facet name="header">
+                            <h:outputText dir="#{lable.dir}" value="#{lable.attach_reciepte}" />
+                        </f:facet>
+                        <h:commandButton 
+                            rendered="#{item.reqToBeCollected}"
+                            image="/faces/resources/Images/upload.png"
+                            action="#{Workflow.processItem()}"
+                                     >
+                            <f:ajax execute="@this" render=":scanRecieptePaperNow" onevent="showScannedReceiptePaper" />
+                        </h:commandButton>
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.doAction}" />
+                        </f:facet>
+                        <h:commandButton image="/faces/resources/Images/diverts.png" id="processIt" action="#{Workflow.processItem()}">
+                            <f:ajax execute="@this" render=":processItGroup" onevent="doProcess" />  
+                        </h:commandButton>
+                        
+                    </h:column>
+                    
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.sms}" />
+                        </f:facet>
+                        <h:commandButton rendered="#{Workflow.showMobile()}" image="/faces/resources/Images/sms.png" dir="#{lable.dir}" action="#{Workflow.processItem()}">
+                            <f:ajax execute="@this" render=":processItSMSForm" onevent="doProcessSMS" />
+                        </h:commandButton>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{lable.moreInfo}" />
+                        </f:facet>
+                        <h:commandButton image="/faces/resources/Images/info.png" action="#{Workflow.processItem()}">
+                            <f:ajax execute="@this" render=":allInfoGroup" onevent="showAllInfo" />  
+                        </h:commandButton>
+                        
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText dir="#{lable.dir}" value="#{lable.wared_print}" />
+                        </f:facet>
+                        <h:commandButton  image="/faces/resources/Images/printFile.png" dir="#{lable.dir}" action="#{Workflow.processItem()}">
+                            <f:ajax execute="@this" onevent="openStatusFileInfo" />
+                        </h:commandButton>
+                    </h:column>
+                </h:dataTable>
+                </center>
+                <center>
+                <h:panelGrid columns="3" cellpadding="10" >
+                    
+                    <h:commandButton image="/faces/resources/Images/right.png" action="#{Workflow.previous}" rendered="#{Workflow.pagination.hasPreviousPage}"> &nbsp; 
+                    <f:ajax execute="@form" render="toDosForm count" onevent="showLoading" />
+                    </h:commandButton>
+
+                    <h:commandButton image="/faces/resources/Images/left.png" action="#{Workflow.next}" rendered="#{Workflow.pagination.hasNextPage}"> &nbsp; 
+                    <f:ajax execute="@form" render="toDosForm count" onevent="showLoading" />
+                    </h:commandButton>
+                    
+                    
+                </h:panelGrid>
+                </center>
+                
+            </h:panelGroup>
+            <h:panelGroup id="noResult" rendered="#{Workflow.items.rowCount == 0}" >
+                <h:outputText value="#{lable.no_result}" />
+            </h:panelGroup>
+            
+               
+            
+           
+        </div>
+    </div>
+        
+        
+  </h:form>
+                        <!-- AJAX MODAL FOR SCANNED RECIPETE -->
+                            <h:panelGroup id="scanRecieptePaperNow" >
+                         <div dir="#{lable.dir}" class="panel panel-default"  id='scannedReceiptePaidPaper' style='visibility:  hidden;'>
+                             <div id="ajaxModalPanelHeading6" class="panel-heading">
+                                <h3 class="panel-title">#{lable.system_name}</h3>
+                            </div>
+                             <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" >
+                                 <iframe name="scannedReceipteFileFrame" height="500" width="600" ></iframe>
+                                 <form action="/LOAN_SYSTEM/tmp" target="scannedReceipteFileFrame" >
+                                     <input type="submit"
+                                            value="#{lable.refresh_scanned_file}"
+                                            class="btn btn-primary btn-lg btn-block"
+                                            />
+                                 </form>
+                                 <h:form id="scanReceiptePaperForm">
+                                    <h:commandButton value="#{lable.attach_file}"
+                                                     class="btn btn-primary btn-lg btn-block"
+                                                     action="#{Workflow.saveScannedReceipte()}"
+                                                     >
+                                        <f:ajax execute=":scanReceiptePaperForm" render=":scanReceiptePaperForm" onevent="showLoadingScannedReciptePaper"  />
+                                    </h:commandButton>
+                                     <!-- MESSAGE FOR SCANNED CONTRACTS -->
+                                    <div dir="#{lable.dir}" class="panel panel-default"  id='completedReceiptePaperScanned' style='visibility:  hidden;'>
+                                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                                            <h3 class="panel-title">#{lable.system_name}</h3>
+                                        </div>
+                                         <center>
+                                             <div class="panel-body" id="ww" >
+                                             <h:messages id="receiptePaperMessages" errorClass="error"  />
+                                                <br />
+                                                <!--a href="#" onclick="closeMe()" >إغلاق</a--> 
+                                                <a href="#" class="btn-info" onclick="closeMeScannedReceiptePaper()"> #{lable.close} </a>
+                                                <br />
+                                             </div>
+                                         </center>
+                                     </div>
+                                    
+                                 </h:form>
+                                   <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                                   <f:ajax event="click" onevent="closeScannedRecieptePaper" />
+                                               </h:commandButton>
+                                           </h:form>
+                                     </h:panelGrid>
+                                 </div>
+                             </div>
+                            </h:panelGroup>
+                          
+                        
+    <!--script>
+        setInterval(function(){
+        document.getElementById("divertForm:refreshMe").click();
+        },10000);
+    </script--> 
+    
+    <script>
+        var dir = '#{lable.dir}'; 
+        var title = '#{lable.system_name}';
+        var close = '#{lable.close}'; 
+    </script>
+</ui:composition>
+  

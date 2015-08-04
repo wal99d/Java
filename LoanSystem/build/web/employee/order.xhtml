@@ -1,0 +1,773 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                 >
+    
+    <h:outputScript library="JS" name="fixes.js" target="head" />
+    
+    <!-- CLIENT FORM -->
+    <h:panelGroup id="clientFormPanel">
+    <h:form id="clientForm" rendered="#{orderForm.isClient}">
+        
+            <div id="divertPanel1" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.client_info}
+                </h3>
+            </div>
+                <div class="panel-body">
+                    <h:panelGrid columns="4" cellpadding="4" cellspacing="4">
+                        <h:outputLabel value="#{lable.newOrNot}" />
+                        <h:selectBooleanCheckbox value="#{orderForm.isNewClient}">
+                            <f:ajax render="clientInputs" />
+                        </h:selectBooleanCheckbox>
+                    </h:panelGrid>
+                        <h:panelGroup id="clientInputs" >
+                            <h:panelGrid columns="2" cellpadding="4" cellspacing="4">
+                            <h:outputLabel rendered="#{orderForm.isNewClient}" 
+                                          value="#{lable.newclient_number}" 
+                                           />
+                            <h:outputLabel rendered="#{orderForm.isNewClient}"
+                                           style="color: blue;"
+                                         value="#{orderForm.clientNumber}"
+                                         >
+                                <f:convertNumber maxIntegerDigits="11" pattern="0000000000" />
+                            </h:outputLabel>
+                            <h:commandButton rendered="#{orderForm.isNewClient}"
+                                             value="#{lable.next}"
+                                             action="#{orderForm.addClient()}"
+                                             class="btn btn-primary">
+                                <f:ajax execute="@all" render=":clientFormPanel :allForms"  />
+                            </h:commandButton>
+                            
+                            <h:outputLabel rendered="#{not orderForm.isNewClient}" 
+                                          value="#{lable.deleteAllInfo}" 
+                                           />
+                            <h:selectBooleanCheckbox rendered="#{not orderForm.isNewClient}" 
+                                                     value="#{orderForm.deleteAll}">
+                                <f:ajax execute="@all" render=":allForms :clientFormPanel" />
+                            </h:selectBooleanCheckbox>
+                            <h:outputLabel rendered="#{not orderForm.isNewClient}" 
+                                          value="#{lable.client_number}" 
+                                           />
+                            <h:inputText rendered="#{not orderForm.isNewClient}"
+                                         value="#{orderForm.clientNumber}"
+                                         class="form-control" 
+                                         p:type='number'
+                                         validator="#{orderForm.validateClientNumber}" />
+                            <h:commandButton rendered="#{not orderForm.isNewClient}"
+                                             value="#{lable.next}"
+                                             action="#{orderForm.findClientId()}"
+                                             class="btn btn-primary">
+                                <f:ajax execute="@all" render=":clientFormPanel :allForms" />
+                            </h:commandButton>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        
+                  </div>
+            </div>
+    </h:form>
+    </h:panelGroup>
+    
+    <h:panelGroup id="allForms">
+        
+    <!-- PERSONAL INFO -->
+    <h:form rendered="#{orderForm.isClientValidated}" id="personalInfoForm">
+        <div id="divertPanel1" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.personal_info}
+                </h3>
+            </div>
+            <div class="panel-body" >
+                <h:panelGrid columns="4" cellpadding="4" cellspacing="4" width="80%" >
+                    <h:outputLabel value="#{lable.client_name}" 
+                                   />
+                    <h:inputText value="#{orderForm.clientName}"
+                                 class="form-control" 
+                                 validator="#{orderForm.validateClientName}" 
+                                 />
+                    
+                    <h:outputLabel value="#{lable.client_sex}" 
+                                   />
+                    <h:selectOneMenu value="#{orderForm.gender}"
+                                     class="form-control"
+                                     validator="#{orderForm.validateGenderSelected}"
+                                     valueChangeListener="#{orderForm.genderSelected}"
+                                     >
+                        <f:selectItem itemValue="0" itemLabel="#{lable.choose_gender}" itemDisabled="true" />
+                        <f:selectItem itemValue="1" itemLabel="#{lable.male}"  />
+                        <f:selectItem itemValue="2" itemLabel="#{lable.female}" />
+                        <f:ajax event="change"  />
+                    </h:selectOneMenu>
+                    
+                    
+                    <h:outputLabel value="#{lable.client_job}" 
+                                   />
+                    <h:selectOneMenu value="#{orderForm.job}"
+                                     class="form-control"
+                                     validator="#{orderForm.validateJobSelected}" 
+                                     >
+                                     
+                        <f:selectItem itemValue="0" itemLabel="#{lable.choose_job}" itemDisabled="true" />
+                        <f:selectItem itemValue="1" itemLabel="#{lable.job1}" />
+                        <f:selectItem itemValue="2" itemLabel="#{lable.job2}" />
+                        <f:selectItem itemValue="3" itemLabel="#{lable.job3}" />
+                        <f:ajax event="change" listener="#{orderForm.jobSelected}" render="otherJob" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup id="otherJob">
+                        <h:panelGrid  columns="2" >
+                            <h:outputLabel value="#{lable.job3}"
+                                           rendered="#{orderForm.job == 3}"
+                                             />
+                            <h:inputText validator="#{orderForm.validateOtherJobSelected}"
+                                         class="form-control"
+                                         value="#{orderForm.otherJob}"
+                                         rendered="#{orderForm.job == 3}"
+                                         />
+                             
+                        </h:panelGrid>
+                        
+                    </h:panelGroup>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.gov_id}"/>
+                    <h:inputText validator="#{orderForm.validateGovID}"
+                                 value="#{orderForm.govId}"
+                                 class="form-control"
+                                 p:type="number"/>
+                    
+                    <h:outputLabel value="#{lable.issuer}" />
+                    <h:inputText validator="#{orderForm.validateGovIDIssuer}"
+                                 value="#{orderForm.idIssuer}"
+                                 class="form-control" />
+                    
+                    
+                    <h:outputLabel value="#{lable.issueDate}" />
+                    <h:inputText validator="#{orderForm.validateGovIDIssueDate}"
+                                 p:placeholder="#{lable.date}"
+                                 class="form-control"
+                                 value="#{orderForm.issueDateString}"/>
+                    
+                    <h:outputLabel value="#{lable.issueDateEnd}" />
+                    <h:inputText validator="#{orderForm.validateGovIDIssueEndDate}"
+                                 p:placeholder="#{lable.date}"
+                                 class="form-control"
+                                 value="#{orderForm.issueEndDateString}"/>
+                    
+                    
+                    <h:outputLabel value="#{lable.birthDayDate}" />
+                    <h:inputText validator="#{orderForm.validateBirthdayDate}"
+                                 p:placeholder="#{lable.date}"
+                                 class="form-control"
+                                 value="#{orderForm.birthdayDateString}"/>
+                    
+                    
+                    <h:column></h:column>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.material_status}"/>
+                    <h:selectOneMenu value="#{orderForm.status}"
+                                     class="form-control"
+                                     validator="#{orderForm.validateStatusSelected}"
+                                     valueChangeListener="#{orderForm.genderSelected}">
+                        <f:selectItem itemValue="0" itemLabel="#{lable.choose_status}" itemDisabled="true" />
+                        <f:selectItem itemValue="1" itemLabel="#{lable.married}" />
+                        <f:selectItem itemValue="2" itemLabel="#{lable.Single}" />
+                        <f:selectItem itemValue="3" itemLabel="#{lable.other}" />
+                        <f:ajax execute="@this" event="change" render="otherStatus" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGrid id="otherStatus" columns="2">
+                        <h:outputLabel value="#{lable.other}"
+                                      rendered="#{orderForm.status == '3'}" />
+                        <h:inputText validator="#{orderForm.validateOtherStatusSelected}"
+                                     class="form-control"
+                                     value="#{orderForm.otherStatus}" 
+                                     rendered="#{orderForm.status == '3'}" />
+                        
+                    </h:panelGrid>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.dependentsNumber}" />
+                    <h:inputText value="#{orderForm.dependents}"
+                                 p:type="number"
+                                 class="form-control" />
+                   
+                    <h:outputLabel value="#{lable.crNumber}" />
+                    <h:inputText value="#{orderForm.crId}"
+                                 p:type="number"
+                                 class="form-control" />
+                    
+                    
+                    <h:outputLabel value="#{lable.crIssuer}" />
+                    <h:inputText value="#{orderForm.crIssuer}"
+                                 class="form-control"
+                                  />
+                    
+                    <h:outputLabel value="#{lable.issueDate}" />
+                    <h:inputText p:placeholder="#{lable.date}"
+                                 class="form-control"
+                                 value="#{orderForm.crIssueDateString}"/>
+                    
+                    
+                    <h:outputLabel value="#{lable.address}" />
+                    <h:inputText value="#{orderForm.pobox}"
+                                 p:type="number"
+                                 class="form-control" 
+                                 />
+                    
+                    <h:outputLabel value="#{lable.city}" />
+                    <h:inputText value="#{orderForm.city}"
+                                 class="form-control"
+                                 />
+                   
+                    
+                    <h:outputLabel value="#{lable.postalCode}" />
+                    <h:inputText value="#{orderForm.postalCode}"
+                                 p:type="number"
+                                 class="form-control" />
+                    
+                    <h:outputLabel value="#{lable.wassel}" />
+                    <h:inputText value="#{orderForm.wassel}"
+                                 class="form-control"
+                                  />
+                    
+                    
+                    <h:outputLabel value="#{lable.tel}" />
+                    <h:inputText value="#{orderForm.tel}"
+                                 p:type="number"
+                                 class="form-control" />
+                    
+                    <h:outputLabel value="#{lable.mobile}" />
+                    <h:inputText value="#{orderForm.mobile}"
+                                 validator="#{orderForm.validateMobile}"
+                                 class="form-control" />
+                   
+                    
+                    <h:outputLabel value="#{lable.resedentType}" />
+                    <h:selectOneMenu value="#{orderForm.resedentType}"
+                                     class="form-control"
+                                     validator="#{orderForm.validateResidentSelected}"
+                                     >
+                        <f:selectItem itemValue="0" itemLabel="#{lable.choose_resident}" itemDisabled="true" />
+                        <f:selectItem itemValue="1" itemLabel="#{lable.owned}" />
+                        <f:selectItem itemValue="2" itemLabel="#{lable.rental}" />
+                        <f:selectItem itemValue="3" itemLabel="#{lable.fromCompany}" />
+                        <f:selectItem itemValue="4" itemLabel="#{lable.withOthers}" />
+                        <f:ajax execute="@this" event="change" listener="#{orderForm.residentSelected}" render="rentAmount" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup id="rentAmount">
+                        <h:panelGrid  columns="2" >
+                            <h:outputLabel value="#{lable.rentAmount}"
+                                           rendered="#{orderForm.resedentType == 2}"
+                                          />
+                            <h:inputText class="form-control"
+                                         value="#{orderForm.resedentRentAmount}" 
+                                         rendered="#{orderForm.resedentType == 2}"
+                                          />
+                            
+                            
+                        </h:panelGrid>
+                        
+                    </h:panelGroup>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.city}" />
+                    <h:inputText value ="#{orderForm.resedentCity}"
+                                 class="form-control"/>
+                    
+                    <h:outputLabel value="#{lable.district}" />
+                    <h:inputText value="#{orderForm.resedentDistrict}" 
+                                 class="form-control" />
+                    
+                    
+                    <h:outputLabel value="#{lable.street}" />
+                    <h:inputText value="#{orderForm.resedentStreet}" 
+                                 class="form-control"
+                                  />
+                    
+                    <h:outputLabel value="#{lable.homeNumber}" />
+                    <h:inputText value="#{orderForm.resedentNumber}"
+                                 p:type="number"
+                                 class="form-control" />
+                    <h:outputLabel value="#{lable.clientNotes}"
+                                   style="color: red;"/>
+                    <h:inputText value="#{orderForm.clientNotes}"
+                                 class="form-control"
+                                 style="color: red;"    />
+                    
+                </h:panelGrid>
+                <h:commandButton 
+                                 value="#{lable.next}"
+                                 action="#{orderForm.addClientPersonalInfo()}"
+                                 class="btn btn-primary">
+                        <f:ajax execute="@form" render="personalInfoForm :allForms" />
+                </h:commandButton>
+                <h:commandButton 
+                                 value="#{lable.previuos}"
+                                 action="#{orderForm.backToMain()}"
+                                 class="btn btn-danger"
+                                 style="float:left;" >
+                        <f:ajax execute="@form" render=":clientFormPanel :allForms" />
+                </h:commandButton>
+            </div>
+        </div>
+    </h:form>
+    
+    <!-- EMPLOYMENT INFO -->
+    <h:form id="employmentInfoForm" rendered="#{orderForm.isPersonalInfoValidated}" >
+        <div id="divertPanel1" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.employmentInfo}
+                </h3>
+            </div>
+            <div id="employmentInfo" class="panel-body">
+                <h:panelGrid columns="4" cellpadding="4" cellspacing="4"  width="80%" >
+                    <h:outputLabel value="#{lable.employer}" />
+                    <h:inputText value="#{orderForm.employer}"
+                                 validator="#{orderForm.validateEmployerName}"
+                                 class="form-control" />
+                    <h:outputLabel value="#{lable.jobTitle}" />
+                    <h:inputText value="#{orderForm.jobTitle}"
+                                 validator="#{orderForm.validateJobTitle}"
+                                 class="form-control" />
+                    
+                    <h:outputLabel value="#{lable.emplymentNumber}" />
+                    <h:inputText value="#{orderForm.employmentNumber}"
+                                 class="form-control" />
+                    <h:column></h:column>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.departement}" />
+                    <h:inputText value="#{orderForm.departement}"
+                                 class="form-control" />
+                    <h:outputLabel value="#{lable.employmentDate}" />
+                    <h:inputText id="empDate"
+                                 p:placeholder="#{lable.date}"
+                                 validator="#{orderForm.validateEmploymentDate}"
+                                 class="form-control"
+                                 value="#{orderForm.employmentDateString}"/>
+                    
+                    <h:outputLabel value="#{lable.rank}" />
+                    <h:selectOneMenu value="#{orderForm.rankID}"
+                                     class="form-control"
+                                     id ="rank"
+                                     >
+                        <f:selectItem itemValue="0" itemLabel="#{lable.choose_rank}" itemDisabled="true" />
+                        <f:selectItems value="#{orderForm.ranks}" var="r" itemValue="#{r.rankId}" itemLabel="#{r.rankTitle}" />
+                        <f:ajax execute="@this empDate" event="change" listener="#{orderForm.rankSelected}" render="pilot retirmentAge :msg" />
+                    </h:selectOneMenu>
+                    <h:panelGroup id="pilot" >
+                        <h:outputLabel value="#{lable.pilot}"
+                                       rendered="#{orderForm.valueOfPilotAge !=0}"/>
+                        <h:selectBooleanCheckbox value="#{orderForm.isPilot}"
+                                                 rendered="#{orderForm.valueOfPilotAge !=0}"   >
+                            <f:ajax execute="@this empDate" listener="#{orderForm.rankSelected}" render="retirmentAge :msg" />
+                        </h:selectBooleanCheckbox>
+                    </h:panelGroup>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.militaryNumber}"/>
+                    <h:inputText value="#{orderForm.militaryNumber}"
+                                 class="form-control"
+                                 p:type="number" />
+                    <h:outputLabel value="#{lable.salary}"/>
+                    <h:inputText value="#{orderForm.salary}"
+                                 validator="#{orderForm.validateSalary}"
+                                 class="form-control"
+                                 p:type="number" />
+                    
+                    <h:outputLabel value="#{lable.extraIncom}"/>
+                    <h:inputText value="#{orderForm.extraIncom}"
+                                 class="form-control"
+                                 p:type="number"/>
+                    <h:column></h:column>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.salaryDate}" />
+                    <h:inputText class="form-control"
+                                 value="#{orderForm.payDay}"/>
+                    <h:outputLabel value="#{lable.toDate}" />
+                    <h:selectOneMenu value="#{orderForm.yearType}"
+                                     class="form-control"
+                                     valueChangeListener="#{orderForm.yearSelected}">
+                        <f:selectItem itemValue="0" itemLabel="#{lable.choose_year}" itemDisabled="true" />
+                        <f:selectItem itemValue="1" itemLabel="#{lable.hijri}" />
+                        <f:selectItem itemValue="2" itemLabel="#{lable.georgian}" />
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="#{lable.toRetire}" />
+                    <h:inputText  value="#{orderForm.toRetire}"
+                                  id="retirmentAge"
+                                 class="form-control" 
+                                 disabled="true" />
+                    <h:column></h:column>
+                    <h:column></h:column>
+                    
+                    <h:outputLabel value="#{lable.lineManager}" />
+                    <h:inputText value="#{orderForm.employerReportTo}"
+                                 class="form-control" />
+                    <h:outputLabel value="#{lable.managerTitle}" />
+                    <h:inputText value="#{orderForm.employerJobTitle}"
+                                 class="form-control" />
+                    
+                    <h:outputLabel value="#{lable.jobTel}" />
+                    <h:inputText value="#{orderForm.employerTel}"
+                                 p:type="number"
+                                 class="form-control" />
+                    <h:outputLabel value="#{lable.telExt}" />
+                    <h:inputText value="#{orderForm.employerTelExt}"
+                                 p:type="number"
+                                 class="form-control" />
+                    
+                    <h:outputLabel value="#{lable.contactName}" />
+                    <h:inputText validator="#{orderForm.validateContactName}"
+                                 value="#{orderForm.contactName}"
+                                 class ="form-control" />
+                    <h:outputLabel value="#{lable.contactTel}" />
+                    <h:inputText p:type="number"
+                                 value="#{orderForm.contactTel}"
+                                 class ="form-control" />
+                    
+                    <h:outputLabel value="#{lable.contactMobile}" />
+                    <h:inputText value="#{orderForm.contactMobile}"
+                                 validator="#{orderForm.validateContactMobile}"
+                                 class ="form-control" />
+                </h:panelGrid>
+                <h:commandButton 
+                                 value="#{lable.next}"
+                                 class="btn btn-primary"
+                                 action="#{orderForm.addClientEmploymentInfo()}" >
+                    <f:ajax execute="@form" render="employmentInfoForm :allForms"  />
+                </h:commandButton>
+                <h:commandButton 
+                                 value="#{lable.previuos}"
+                                 action="#{orderForm.backToPersonalInfo()}"
+                                 class="btn btn-danger"
+                                 style="float:left;" >
+                        <f:ajax execute="@form" render="employmentInfoForm :allForms" />
+                </h:commandButton>
+                
+            </div>
+        </div>
+    </h:form> 
+    
+    
+    <!-- FINANCIAL INFO -->
+    <h:panelGroup id="financailInfo" rendered="#{orderForm.isEmploymentInfoValidated}">
+        <div id="divertPanel1" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.financailInfo}
+                </h3>
+            </div>
+            <div id="financailInfo" class="panel-body">
+                
+                    <h:panelGroup id="loanersTable">
+                        <h:form rendered="#{orderForm.hideLoanerInputs}"  id="financailInfoLoanerTableForm">
+                            <h:panelGrid columns="2" cellpadding="4" cellspacing="4" >
+                                <h:outputLabel value="#{lable.liable}" />
+                                <h:selectBooleanCheckbox value="#{orderForm.liable}"
+                                                         class="checkbox">
+                                    <f:ajax execute="@this"  render="@form :financailInfoDataTableForm" />
+                                </h:selectBooleanCheckbox>
+                            </h:panelGrid> 
+                           
+                            <h:panelGrid rendered="#{orderForm.liable}"  columns="4" cellpadding="4" cellspacing="4" width="80%">
+                               <h:outputLabel value="#{lable.loanerName}" />
+                               <h:inputText value="#{orderForm.loanerName}"
+                                            id="loanerNameInput"
+                                            validator="#{orderForm.validateLoanerName}"
+                                                 class="form-control" />
+                               <h:outputLabel value="#{lable.loanedAmount}" />
+                               <h:inputText value="#{orderForm.amount}"
+                                             validator="#{orderForm.validateLoanedAmount}"
+                                             class="form-control" />
+
+                               <h:outputLabel value="#{lable.duration}" />
+                               <h:inputText value="#{orderForm.duration}"
+                                             validator="#{orderForm.validateDuration}"
+                                             class="form-control" />
+                               <h:outputLabel value="#{lable.remainingAmount}" />
+                               <h:inputText value="#{orderForm.remaining}"
+                                             validator="#{orderForm.validateRemaining}"
+                                             class="form-control" />
+
+                               <h:outputLabel value="#{lable.installment}" />
+                               <h:inputText value="#{orderForm.installment}"
+                                             validator="#{orderForm.validateInstallement}"
+                                             class="form-control" />
+
+                            </h:panelGrid> 
+                            <h:commandButton value="#{lable.addLoaner}"
+                                             action="#{orderForm.addLoanerInfo}"
+                                             rendered="#{orderForm.liable}"
+                                             class="btn btn-success"
+                                             >
+                                <f:ajax execute="@form" render=":financailInfoLoanerTableForm :loanersTable :allForms" onevent="getFocus" />
+                            </h:commandButton>
+                        </h:form>
+                        <br />
+                        <br />
+                        <h:form id="financailInfoDataTableForm">
+                            <h:panelGroup rendered="#{orderForm.items.rowCount > 0}" id="financailInfoDataTable" >
+                            <h:dataTable rendered="#{orderForm.liable}" class="table1" cellpadding="4" cellspacing="4" value="#{orderForm.items}" var="item" width="100%" rowClasses="odd_row, even_row">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanerName}" />
+                                </f:facet>
+                                <h:inputText value="#{orderForm.loanerName}"
+                                             validator="#{orderForm.validateLoanerName}"
+                                             class="form-control"
+                                             rendered="#{item.isEditable}"/>
+                                <h:outputLabel value="#{item.loanerName}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not item.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanedAmount}" />
+                                </f:facet>
+                                <h:inputText value="#{orderForm.amount}"
+                                             validator="#{orderForm.validateLoanedAmount}"
+                                             class="form-control" 
+                                             rendered="#{item.isEditable}"/>
+                                <h:outputLabel value="#{item.amount}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not item.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.duration}" />
+                                </f:facet>
+                                <h:inputText value="#{orderForm.duration}"
+                                             validator="#{orderForm.validateDuration}"
+                                             class="form-control" 
+                                             rendered="#{item.isEditable}"/>
+                                <h:outputLabel value="#{item.duration}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not item.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.remainingAmount}" />
+                                </f:facet>
+                                <h:inputText value="#{orderForm.remaining}"
+                                             validator="#{orderForm.validateRemaining}"
+                                             class="form-control" 
+                                             rendered="#{item.isEditable}"/>
+                                <h:outputLabel value="#{item.remaining}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not item.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.installment}" />
+                                </f:facet>
+                                <h:inputText value="#{orderForm.installment}"
+                                             validator="#{orderForm.validateInstallement}"
+                                             class="form-control" 
+                                             rendered="#{item.isEditable}"/>
+                                <h:outputLabel value="#{item.installment}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not item.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/edit.png"
+                                                 action="#{orderForm.editLoanerInfo}"
+                                                 rendered="#{not item.isEditable}"
+                                                 >
+                                    <f:ajax execute="@form" render=":financailInfoDataTableForm :allForms"  />
+                                </h:commandButton>
+                                <h:commandButton image="/faces/resources/Images/save.png"
+                                                 action="#{orderForm.saveLoanerRowInfo}"
+                                                 rendered="#{item.isEditable}"
+                                                 >
+                                    <f:ajax execute="@form" render=":financailInfoDataTableForm :allForms"  />
+                                </h:commandButton>
+                                <h:commandButton image="/faces/resources/Images/remove.png"
+                                                 action="#{orderForm.deleteLoanerInfo}"
+                                                 rendered="#{not item.isEditable}"
+                                                 >
+                                    <f:ajax execute="@form" render=":financailInfoDataTableForm :allForms"  />
+                                </h:commandButton>
+
+                            </h:column>
+                        </h:dataTable>
+                            <center>
+                        <h:panelGrid columns="3" cellpadding="10" >
+
+                            <h:commandButton image="/faces/resources/Images/right.png" actionListener ="#{orderForm.previous}" rendered="#{orderForm.pagination.hasPreviousPage}"> &nbsp; 
+                            <f:ajax execute="@form" render="financailInfoDataTable" onevent="showLoading" />
+                            </h:commandButton>
+
+                            <h:commandButton image="/faces/resources/Images/left.png" actionListener="#{orderForm.next}" rendered="#{orderForm.pagination.hasNextPage}"> &nbsp; 
+                            <f:ajax execute="@form" render="financailInfoDataTable" onevent="showLoading" />
+                            </h:commandButton>
+
+
+                        </h:panelGrid>
+                            </center>
+                       </h:panelGroup>
+                  </h:form>
+                    <h:form >
+                        <h:commandButton value="#{lable.next}"
+                                         action="#{orderForm.moveNext()}"
+                                         class="btn btn-primary"
+                                         >
+                            <f:ajax execute="@form" render=":allForms" />
+                        </h:commandButton>
+                        <h:commandButton 
+                                 value="#{lable.previuos}"
+                                 action="#{orderForm.backToEmploymentInfo()}"
+                                 class="btn btn-danger"
+                                 style="float:left;" >
+                          <f:ajax execute="@form" render=":allForms" />
+                         </h:commandButton>
+                    </h:form>
+                </h:panelGroup>
+            </div>
+        </div>
+    </h:panelGroup>
+    
+    <!-- REQUEST FORM -->
+    <h:form id="requestForm" rendered="#{orderForm.isFinancailInfoValidated}">
+        
+        <div id="divertPanel1" class="panel panel-default">
+            <div id="divertHeadingPanel1" class="panel-heading">
+                <h3 id="h3Title2" class="panel-title">
+                    #{lable.requestSave}
+                </h3>
+            </div>
+            <div id="requestDetails" class="panel-body">
+                
+                <h:panelGroup >
+                    <h:outputLabel style="color:blue" 
+                                   value="#{lable.showRequestMessages}"
+                                   rendered="#{not orderForm.isRequest}"/>
+                <h:panelGrid columns="2" cellpadding="4" cellspacing="4" >
+                    <h:outputLabel value="#{lable.requestNumber}" />
+                    <h:inputText value="#{orderForm.requestNumber}"
+                                 validator="#{orderForm.validateRequestNumber}"
+                                 p:type="number"
+                                 class="form-control" />
+                    <h:commandButton  style="width:200px;" 
+                                      class="btn btn-success btn-lg btn-block"  
+                                      value="#{lable.attach_scan}"
+
+                                      >
+                        <f:ajax event="click" onevent="showScannedFile" />
+                    </h:commandButton>
+                    <h:commandButton style="width:200px;"
+                                     class="btn btn-primary btn-lg btn-block"
+                                     action="#{orderForm.saveRequest()}"
+                                     value ="#{lable.saveRequest}" >
+                        <f:ajax execute="@all" render="@all" onevent="showLoading" />
+                    </h:commandButton>
+                </h:panelGrid>
+                    <h:commandButton 
+                                     value="#{lable.backToStart}"
+                                     action="#{orderForm.backToMain()}"
+                                     class="btn btn-danger"
+                                     style="float:left;" >
+                            <f:ajax execute="@this" render=":clientFormPanel :allForms" />
+                    </h:commandButton>
+                </h:panelGroup>
+            </div>
+        </div>
+        
+    </h:form>
+   
+    <!-- AJAX MODAL FOR SCANNED SADER FILE -->
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='scannedFile' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading7" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" >
+                                 <iframe name="scannedFileFrame" height="500" width="600" ></iframe>
+                                 <form action="/LOAN_SYSTEM/tmp" target="scannedFileFrame" >
+                                     <input type="submit"
+                                            value="#{lable.refresh_scanned_file}"
+                                            class="btn btn-primary btn-lg btn-block"
+                                            />
+                                 </form>
+                                 <h:form id="scanForm">
+                                    <h:commandButton value="#{lable.attach_file}"
+                                                     class="btn btn-primary btn-lg btn-block"
+                                                     action="#{orderForm.saveScannedPDF()}"
+                                                     >
+                                        <f:ajax execute=":scanForm" render=":scanForm" onevent="showLoadingScanned"  />
+                                    </h:commandButton>
+                                     <!-- MESSAGE FOR SCANNED WARED -->
+                                    <div dir="#{lable.dir}" class="panel panel-default"  id='completedScanned' style='visibility:  hidden;'>
+                                         <div id="ajaxModalPanelHeading7" class="panel-heading">
+                                            <h3 class="panel-title">#{lable.system_name}</h3>
+                                        </div>
+                                         <center>
+                                             <div class="panel-body" id="ss" >
+                                             <h:messages id="scanMessages" errorClass="error"  />
+                                                <br />
+                                                <!--a href="#" onclick="closeMe()" >إغلاق</a--> 
+                                                <a href="#" class="btn-info" onclick="closeMeScanned()"> #{lable.close} </a>
+                                                <br />
+                                             </div>
+                                         </center>
+                                     </div>
+                                 </h:form>
+                                   <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeScannedFileWindow" />
+                                       </h:commandButton>
+                                       
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+    
+   
+    
+    <!-- ORDER MESSAGES -->
+    <h:panelGroup id="msg">
+    <h:panelGroup rendered="#{not empty facesContext.messageList}" >
+        <div dir="#{lable.dir}" class="panel panel-default" id="orderMessages" >
+             <div class="panel-heading">
+                <h3 class="panel-title">#{lable.system_name}</h3>
+            </div>
+                <div class="panel-body"  >
+                    <h:messages errorStyle="color:red" />
+                    <br />
+                    <center>
+                    <a href="#" class="btn-info" onclick="closeMe()"> #{lable.close} </a>
+                    </center>
+                    <br />
+                 </div>
+         </div>
+        <div id='orderBackground' style="visibility: visible;" ></div>
+    </h:panelGroup>
+    </h:panelGroup>
+    </h:panelGroup>
+    <script>
+        var dir = '#{lable.dir}'; 
+        var title = '#{lable.system_name}';
+        var close = '#{lable.close}'; 
+    </script>
+    
+</ui:composition>

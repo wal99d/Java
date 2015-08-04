@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"    
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="utf-8" />
+        
+        <title>
+            <ui:insert name="title" />  
+        </title>
+        <h:outputScript library="JS" name="jquery.min.js" />
+        <h:outputScript library="JS" name="bootstrap.min.js" />
+        <h:outputScript library="JS" name="custom.js" />
+        <h:outputScript library="JS" name="d3.v3.min.js" />
+        <h:outputScript library="JS" name="nv.d3.js" />
+        <h:outputStylesheet library="CSS" name="nv.d3.css" />
+        <h:outputStylesheet library="CSS" name="main.css" />
+        <h:outputStylesheet library="CSS" name="theme.css" /> 
+        <h:outputStylesheet library="CSS" name="custom.css" />
+    </h:head>
+    
+    <h:body>
+        <!-- ADDING RESOURCE BUNDLE -->
+        <f:loadBundle basename="locale.lables_ar" var="lable" />
+        
+        <div  id="navBar" class="navbar navbar-inverse navbar-fixed-top">
+            <div dir="#{lable.dir}" id="welcomeMessage" >
+                <h:outputLabel rendered="#{loginManager.logged}" value="#{lable.welcome_message}...#{loginManager.welcomeMessage}" class="badge badge-info" />
+            </div>
+            <div id="cont" class="container">
+                <div id="navHeader" class="navbar-header">
+                    <a href="#" class="navbar-brand">
+                        <h:graphicImage name="logo.png" library="Images" /> Edari.. Documents Workflow and Archiving System
+                    </a> 
+                </div>
+                <div id="navColapse" class="collapse navbar-collapse">
+                    <!-- LANGUAGE FORM -->
+                    <span id="language">
+                        
+                        <h:form id="loginLogoutForm" >
+                            <h:commandButton class="btn-toolbar" rendered="#{loginManager.logged}" image="/faces/resources/Images/logout.png" id="logoutLable" action="#{loginManager.logout()}" value="#{lable.logout}">
+                                <!--f:ajax execute="@all" render="@all" onevent="showLoading" /-->
+                            </h:commandButton>
+                            
+                        </h:form>
+                    </span>
+                    
+                       
+                </div>
+            </div>
+        </div>
+             
+            
+            <h:panelGroup id="mainContent">
+                
+                <ui:insert name="content" />
+                <h:outputText value="#{lang.locale}" id="langOut" />
+            </h:panelGroup>
+                
+            <!-- Ajax Modal Messages -->
+                    <div dir="#{lable.dir}" class="panel panel-default" id='loadingmsg' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <center>
+                         <h:graphicImage library="Images" name="ajax-loader.gif" /> <br />
+                            <div class="panel-body">
+                                <h2>جاري تنفيذ الأمر....</h2>
+                            </div>
+
+                         </center>
+                     </div>
+
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='completed' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <center>
+                             <div class="panel-body" >
+                             <!--h:messages id="messages" errorClass="error"  /-->
+                                <br />
+                                <!--a href="#" onclick="closeMe()" >إغلاق</a--> 
+                                <button class="btn-info" onclick="closeMe()"> #{lable.close} </button>
+                                <br />
+                             </div>
+                         </center>
+                     </div>
+            <div id='loadingover' style='visibility:  hidden;'></div>
+            <!--ui:include src="./allModals.xhtml" /-->
+    </h:body>
+    
+</html>

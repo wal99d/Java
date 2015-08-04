@@ -1,0 +1,262 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                 xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                 xmlns:jsf="http://xmlns.jcp.org/jsf"
+                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                 >  
+    
+               
+                
+                    <h:form id="toBePaidForm">
+                        <h:panelGroup id="toBePaidGroup">
+                    <h:dataTable class="table1" cellpadding="4" cellspacing="4" value="#{toBePaidBean.items}" var="itemToBePaid" width="100%" rowClasses="odd_row, even_row">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanerName}" />
+                                </f:facet>
+                                <h:inputText value="#{toBePaidBean.loanerName}"
+                                             validator="#{toBePaidBean.validateLoanerName}"
+                                             class="form-control"
+                                             rendered="#{itemToBePaid.isEditable}"/>
+                                <h:outputLabel value="#{itemToBePaid.loanerName}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not itemToBePaid.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.loanedAmount}" />
+                                </f:facet>
+                                <h:inputText value="#{toBePaidBean.amount}"
+                                             validator="#{toBePaidBean.validateLoanedAmount}"
+                                             class="form-control" 
+                                             rendered="#{itemToBePaid.isEditable}"/>
+                                <h:outputLabel value="#{itemToBePaid.amount}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not itemToBePaid.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.duration}" />
+                                </f:facet>
+                                <h:inputText value="#{toBePaidBean.duration}"
+                                             validator="#{toBePaidBean.validateDuration}"
+                                             class="form-control" 
+                                             rendered="#{itemToBePaid.isEditable}"/>
+                                <h:outputLabel value="#{itemToBePaid.duration}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not itemToBePaid.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.remainingAmount}" />
+                                </f:facet>
+                                <h:inputText value="#{toBePaidBean.remaining}"
+                                             validator="#{toBePaidBean.validateRemaining}"
+                                             class="form-control" 
+                                             rendered="#{itemToBePaid.isEditable}"/>
+                                <h:outputLabel value="#{itemToBePaid.remaining}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not itemToBePaid.isEditable}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{lable.installment}" />
+                                </f:facet>
+                                <h:inputText value="#{toBePaidBean.installment}"
+                                             validator="#{toBePaidBean.validateInstallement}"
+                                             class="form-control" 
+                                             rendered="#{itemToBePaid.isEditable}"/>
+                                <h:outputLabel value="#{itemToBePaid.installment}"
+                                              class="label-#{lable.dir}}"
+                                              rendered="#{not itemToBePaid.isEditable}" />
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText dir="#{lable.dir}" 
+                                                  value="#{lable.paidDoc}" />
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/download.png" 
+                                                 rendered="#{not itemToBePaid.isEditable and itemToBePaid.paidPaper !=null}"
+                                                 action="#{toBePaidBean.showOrignalPaidFile()}">
+                                    <f:ajax execute="@this" onevent="showDownloadedPaidFile" />
+                                </h:commandButton>
+                            </h:column>
+                            <h:column >
+                                <f:facet name="header">
+                                    <h:outputText dir="#{lable.dir}" value="#{lable.attach_paid}" />
+                                </f:facet>
+                                <h:commandButton 
+                                    rendered="#{not itemToBePaid.isEditable}"
+                                    image="/faces/resources/Images/upload.png"
+                                    action="#{toBePaidBean.processItem()}"
+                                             >
+                                    <f:ajax execute="@this" render=":scanPaidPaperNow" onevent="showScannedPaidPaper" />
+                                </h:commandButton>
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">
+
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/edit.png"
+                                                 action="#{toBePaidBean.editLoanerInfo}"
+                                                 rendered="#{not itemToBePaid.isEditable and not Workflow.isUser}"
+                                                 >
+                                    <f:ajax execute="@form" render=":toBePaidForm"  />
+                                </h:commandButton>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/save.png"
+                                                 action="#{toBePaidBean.saveLoanerRowInfo}"
+                                                 rendered="#{itemToBePaid.isEditable and not Workflow.isUser}"
+                                                 >
+                                    <f:ajax execute="@form" render=":toBePaidForm"  />
+                                </h:commandButton>
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">
+
+                                </f:facet>
+                                <h:commandButton image="/faces/resources/Images/remove.png"
+                                                 action="#{toBePaidBean.deleteLoanerInfo}"
+                                                 rendered="#{not itemToBePaid.isEditable and not Workflow.isUser}"
+                                                 >
+                                    <f:ajax execute="@form" render=":toBePaidForm"  />
+                                </h:commandButton>
+
+                            </h:column>
+                        
+                        </h:dataTable>
+                            <center>
+                        <h:panelGrid columns="3" cellpadding="10" >
+
+                            <h:commandButton image="/faces/resources/Images/right.png" actionListener ="#{toBePaidBean.previous}" rendered="#{toBePaidBean.pagination.hasPreviousPage}"> 
+                            <f:ajax execute="@form" render="toBePaidGroup" onevent="showLoading" />
+                            </h:commandButton>
+
+                            <h:commandButton image="/faces/resources/Images/left.png" actionListener="#{toBePaidBean.next}" rendered="#{toBePaidBean.pagination.hasNextPage}"> 
+                            <f:ajax execute="@form" render="toBePaidGroup" onevent="showLoading" />
+                            </h:commandButton>
+
+
+                        </h:panelGrid>
+                            </center>
+                            <!-- ORDER MESSAGES -->
+                            <h:panelGroup rendered="#{not empty facesContext.messageList}" >
+                                <div dir="#{lable.dir}" class="panel panel-default" id="orderMessages" >
+                                     <div class="panel-heading">
+                                        <h3 class="panel-title">#{lable.system_name}</h3>
+                                    </div>
+                                        <div class="panel-body"  >
+                                            <h:messages id="paidMessages" errorStyle="color:red" />
+                                            <br />
+                                            <center>
+                                            <a href="#" class="btn-info" onclick="closeMe()"> #{lable.close} </a>
+                                            </center>
+                                            <br />
+                                         </div>
+                                 </div>
+                                
+                            </h:panelGroup>
+                            
+                             </h:panelGroup>
+                        </h:form>
+                       
+                       
+                      
+    
+                        <!-- AJAX MODAL FOR SCANNED PAYMENT RECIPETE -->
+                            <h:panelGroup id="scanPaidPaperNow" >
+                         <div dir="#{lable.dir}" class="panel panel-default"  id='scannedPaidPaper' style='visibility:  hidden;'>
+                             <div id="ajaxModalPanelHeading6" class="panel-heading">
+                                <h3 class="panel-title">#{lable.system_name}</h3>
+                            </div>
+                             <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" >
+                                 <iframe name="scannedPaidFileFrame" height="500" width="600" ></iframe>
+                                 <form action="/LOAN_SYSTEM/tmp" target="scannedPaidFileFrame" >
+                                     <input type="submit"
+                                            value="#{lable.refresh_scanned_file}"
+                                            class="btn btn-primary btn-lg btn-block"
+                                            />
+                                 </form>
+                                 <h:form id="scanPaidPaperForm">
+                                    <h:commandButton value="#{lable.attach_file}"
+                                                     class="btn btn-primary btn-lg btn-block"
+                                                     action="#{toBePaidBean.savePaidPaper()}"
+                                                     >
+                                        <f:ajax execute=":scanPaidPaperForm" render=":scanPaidPaperForm" onevent="showLoadingScannedPaidPaper"  />
+                                    </h:commandButton>
+                                     <!-- MESSAGE FOR SCANNED CONTRACTS -->
+                                    <div dir="#{lable.dir}" class="panel panel-default"  id='completedPaidPaperScanned' style='visibility:  hidden;'>
+                                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                                            <h3 class="panel-title">#{lable.system_name}</h3>
+                                        </div>
+                                         <center>
+                                             <div class="panel-body" id="ww" >
+                                             <h:messages id="paidPaperMessages" errorClass="error"  />
+                                                <br />
+                                                <!--a href="#" onclick="closeMe()" >إغلاق</a--> 
+                                                <a href="#" class="btn-info" onclick="closeMeScannedPaidPaperContract()"> #{lable.close} </a>
+                                                <br />
+                                             </div>
+                                         </center>
+                                     </div>
+                                    
+                                 </h:form>
+                                   <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                                   <f:ajax event="click" onevent="closeScannedPaidPaper" />
+                                               </h:commandButton>
+                                           </h:form>
+                                     </h:panelGrid>
+                                 </div>
+                             </div>
+                            </h:panelGroup>
+                            
+                            <!-- View Request Paid Doc  -->
+                            <h:panelGroup id="paidPaperView">
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='paidDownloadedFile' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading8" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" id="showPaidFile" >
+                                 <iframe name="requestPaidDocView" height="500" width="900" ></iframe>
+                                    <form action="/LOAN_SYSTEM/showPaidFile" target="requestPaidDocView" >
+                                         <input type="submit"
+                                                id="refreshPaidFileBtn"
+                                                value="#{lable.refresh}"
+                                                class="hideMe"
+                                                />
+                                     </form>
+                                 <h:form>
+                                     <h:commandButton value="#{lable.download}"
+                                                      action="#{toBePaidBean.downloadFile()}"
+                                                      class="btn btn-success btn-lg btn-block"
+                                                      />
+                                 </h:form>
+                                     
+                                 <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeDownloadedPaidFileView" />
+                                       </h:commandButton>
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+                            </h:panelGroup>
+    
+</ui:composition>

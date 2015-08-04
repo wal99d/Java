@@ -1,0 +1,379 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html" 
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough" 
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+    
+    <h:outputScript library="JS" name="fixes.js" target="head" />
+            <!-- AJAX MODAL FOR ALL INFO  -->
+            <h:panelGroup id="allInfoGroup">
+                <div dir="#{lable.dir}" class="panel panel-default"  id='allInfoModel' style='visibility:  hidden;'  >
+                     <div id="ajaxModalPanelHeading9" class="panel-heading">
+                        <h3 class="panel-title">#{lable.system_name}</h3>
+                     </div>
+                     <div class="panel-body" >
+                         <ui:include src="mainAllInfo.xhtml" />
+                         <h:form id="allInfoForm">
+                             <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                 <f:ajax event="click" onevent="closeAllInfoModel" />
+                             </h:commandButton>
+                         </h:form>
+                     </div>
+                </div>
+            </h:panelGroup>
+            
+            <!-- AJAX MODAL FOR ALL INFO ARCHIVED  -->
+            <h:panelGroup id="allInfoArchivedGroup">
+                <div dir="#{lable.dir}" class="panel panel-default"  id='allInfoModelArchived' style='visibility:  hidden;'  >
+                     <div id="ajaxModalPanelHeading9" class="panel-heading">
+                        <h3 class="panel-title">#{lable.system_name}</h3>
+                     </div>
+                     <div class="panel-body" >
+                         <ui:include src="mainAllInfoArchived.xhtml" />
+                         <h:form id="allInfoArchivedForm">
+                             <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                 <f:ajax event="click" onevent="closeAllInfoArchivedModel" />
+                             </h:commandButton>
+                         </h:form>
+                     </div>
+                </div>
+            </h:panelGroup>
+            
+            
+           
+            
+            <!-- AJAX MODAL FOR ToDos for Users-->
+            <h:panelGroup id="processItGroup">
+                
+                <div dir="#{lable.dir}" class="panel panel-default"  id='toDosModal' style='visibility:  hidden;'  >
+                     <div id="ajaxModalPanelHeading9" class="panel-heading">
+                        <h3 class="panel-title">#{lable.system_name}</h3>
+                     </div>
+                     <div class="panel-body" >
+                         <ui:include src="actions.xhtml" />
+                         <h:form id="processItGroupForm">
+                             <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                 <f:ajax event="click" onevent="closeToDos" />
+                             </h:commandButton>
+                         </h:form>
+                     </div>
+                </div>
+            </h:panelGroup>
+            
+                <!-- AJAX MODAL FOR Payment for Users-->
+            <h:panelGroup id="processPaymentGroup">
+                
+                <div dir="#{lable.dir}" class="panel panel-default"  id='paymentModal' style='visibility:  hidden;'  >
+                     <div id="ajaxModalPanelHeading9" class="panel-heading">
+                        <h3 class="panel-title">#{lable.system_name}</h3>
+                     </div>
+                     <div class="panel-body" >
+                         <ui:include src="toBePaid.xhtml" />
+                         <h:form>
+                             <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                 <f:ajax event="click" onevent="closePayment" />
+                             </h:commandButton>
+                         </h:form>
+                     </div>
+                </div>
+            </h:panelGroup>
+                
+                 
+                
+                     <!-- AJAX MODAL FOR ARCHIVED HISTORY -->
+                     
+                <div dir="#{lable.dir}" class="panel panel-default"  id='archivedNotesModal' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         
+                             <div class="panel-body" >
+                                 
+                                 <h:form id="processArchivedNotesForm" >
+                                 <h:outputText  dir='#{lable.dir}' value="#{lable.requestNumber}: " style="font-size: 18px;" />
+                                 <h:outputText dir='#{lable.dir}' value="#{archiveBean.selected.reqNumber}" style="font-size: 18px;" />
+                                 <br />
+                                 <h:outputText dir='#{lable.dir}' value="#{lable.clientNumber}: " style="font-size: 18px;" />
+                                 <h:outputText dir='#{lable.dir}' value="#{archiveBean.selected.reqClientId.clientNumber}" style="font-size: 18px;" >
+                                     <f:convertNumber maxIntegerDigits="11" pattern="00000000000" />
+                                 </h:outputText>
+                                <br />
+                                <br />
+                                 <h:panelGrid style="width: 500px;" class="panel panel-default" columns="2" cellpadding="11">
+                                        <h:outputText value="#{lable.action_note_old}" />
+                                        <textarea id="historyTextNote"
+                                                  dir='#{lable.dir}'
+                                                  disabled="true"
+                                                  class="form-control"
+                                                  jsf:style="width: 350px!important; height: 60px!important; overflow-y: scroll!important; display:block!important;"
+                                                  jsf:value="#{archiveBean.selected.historyNotes}" />
+                                    </h:panelGrid>
+                                 <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                     <f:ajax event="click" onevent="closeArchivedNotes" />
+                                 </h:commandButton>
+                                </h:form>
+                             </div>
+                         
+                     </div>
+                     
+                     <!-- AJAX MODAL FOR SMS  -->
+                <div dir="#{lable.dir}" class="panel panel-default"  id='smsModal' style='visibility:  hidden;'  >
+                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                             <div class="panel-body" id="bodySmsModal" >
+                                 <h:form id="processItSMSForm"> 
+                                    
+                                     <h:outputText value="#{lable.requestNumber}: " style="font-size: 18px;" />
+                                     <h:outputText value="#{Workflow.selected.reqNumber}" style="font-size: 18px;">
+                                         <f:convertNumber maxIntegerDigits="11" pattern="00000000000" />
+                                     </h:outputText>
+                                     <br />
+                                     <h:outputText value="#{lable.clientNumber}: " style="font-size: 18px;" />
+                                     <h:outputText value="#{Workflow.selected.reqClientId.clientNumber}" style="font-size: 18px;">
+                                         <f:convertNumber maxIntegerDigits="11" pattern="00000000000" />
+                                     </h:outputText>
+                                  
+                                     <h:panelGrid width="100%" columns="2" id="smsTask" cellpadding="11">
+                                                  <h:outputText dir='#{lable.dir}' value="#{lable.sms_to}" />
+                                                  <h:outputText dir='#{lable.dir}' value="#{Workflow.clientMobile}" >
+                                                      <f:convertNumber maxIntegerDigits="10" pattern="0000000000" />    
+                                                  </h:outputText>
+                                         </h:panelGrid>
+                                     <h:inputTextarea value="#{Workflow.smsMessage}" dir='#{lable.dir}' class="form-control" p:placeholder="#{lable.sms_subject}" cols="65" rows="4" style="font-size: 12px;" id="actionTextNote"  />
+                                      <br />
+                                      <br />
+                                      <h:panelGrid columns="2" width="100%">
+                                          <h:commandButton  class="btn btn-primary btn-lg btn-block" 
+                                                            value="#{lable.send_sms}"
+                                                            action="#{Workflow.sendSms()}"
+                                                            >
+                                              <f:ajax execute="processItSMSForm" render=":toDosForm"  onevent="dimissModalSMS"  />
+                                          </h:commandButton>
+                                         <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                             <f:ajax event="click" onevent="closeSMSModal" />
+                                         </h:commandButton>
+                                     </h:panelGrid>
+                                     
+                               </h:form>
+                                 
+                             </div>
+                            <div class="panel-body" id="bodySmsStatusModal" style='visibility:  hidden;' >
+                                <h:outputLabel value="#{lable.smsSent}" 
+                                               style="color:green;" />
+                            </div>
+                     </div>
+                     
+                     <!-- AJAX MODAL FOR ARCHIVED SMS  -->
+                     
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='smsArchivedModal' style='visibility:  hidden;'  >
+                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                             <div class="panel-body" >
+                                 <h:form id="processItArchivedSMSForm"> 
+                                    
+                                     <h:outputText value="#{lable.requestNumber}: " style="font-size: 18px;" />
+                                     <h:outputText value="#{archiveBean.selected.reqNumber}" style="font-size: 18px;">
+                                         <f:convertNumber maxIntegerDigits="11" pattern="00000000000" />
+                                     </h:outputText>
+                                     <br />
+                                     <h:outputText value="#{lable.clientNumber}: " style="font-size: 18px;" />
+                                     <h:outputText value="#{archiveBean.selected.reqClientId.clientNumber}" style="font-size: 18px;">
+                                         <f:convertNumber maxIntegerDigits="11" pattern="00000000000" />
+                                     </h:outputText>
+                                  
+                                     <h:panelGrid width="100%" columns="2" id="smsTask" cellpadding="11">
+                                                  <h:outputText dir='#{lable.dir}' value="#{lable.sms_to}" />
+                                                  <h:outputText dir='#{lable.dir}' value="#{archiveBean.clientMobile}" >
+                                                      <f:convertNumber maxIntegerDigits="10" pattern="0000000000" />
+                                                  </h:outputText>
+                                         </h:panelGrid>
+                                     <h:inputTextarea dir='#{lable.dir}' class="form-control" p:placeholder="#{lable.sms_subject}" cols="65" rows="4" style="font-size: 12px;" id="actionTextNote"  />
+                                      <br />
+                                      <br />
+                                      <h:panelGrid columns="2" width="100%">
+                                          <h:commandButton  class="btn btn-primary btn-lg btn-block" value="#{lable.send_sms}" >
+                                              <f:ajax execute="processItArchivedSMSForm" render=":archivesForm"  onevent="dimissArchivedModalSMS"  />
+                                          </h:commandButton>
+                                         <h:commandButton class="btn btn-danger btn-lg btn-block" value="#{lable.close}" >
+                                             <f:ajax event="click" onevent="closeArchivedSMSModal" />
+                                         </h:commandButton>
+                                     </h:panelGrid>
+                                     
+                               </h:form>
+                                 
+                             </div>
+                     </div>
+                     
+                     
+                     <!-- AJAX MODAL FOR SCANNED CONTRACT/ APPROVED DOC  -->
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='scannedContract' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" >
+                                 <iframe name="scannedWaredFileFrame" height="500" width="600" ></iframe>
+                                 <form action="/LOAN_SYSTEM/tmp" target="scannedWaredFileFrame" >
+                                     <input type="submit"
+                                            value="#{lable.refresh_scanned_file}"
+                                            class="btn btn-primary btn-lg btn-block"
+                                            />
+                                 </form>
+                                 <h:form id="scanContractForm">
+                                    <h:commandButton value="#{lable.attach_file}"
+                                                     class="btn btn-primary btn-lg btn-block"
+                                                     action="#{Workflow.saveScannedPDF2()}"
+                                                     >
+                                        <f:ajax execute=":scanContractForm" render=":scanContractForm" onevent="showLoadingScannedContracts"  />
+                                    </h:commandButton>
+                                     <!-- MESSAGE FOR SCANNED CONTRACTS -->
+                                    <div dir="#{lable.dir}" class="panel panel-default"  id='completedScanned' style='visibility:  hidden;'>
+                                         <div id="ajaxModalPanelHeading6" class="panel-heading">
+                                            <h3 class="panel-title">#{lable.system_name}</h3>
+                                        </div>
+                                         <center>
+                                             <div class="panel-body" id="ww" >
+                                             <h:messages id="scannedContractMessages" errorClass="error"  />
+                                                <br />
+                                                <!--a href="#" onclick="closeMe()" >إغلاق</a--> 
+                                                <a href="#" class="btn-info" onclick="closeMeScannedContract()"> #{lable.close} </a>
+                                                <br />
+                                             </div>
+                                         </center>
+                                     </div>
+                                     <!-- ERROR MESSAGES -->
+                                    <h:panelGroup rendered="#{not empty facesContext.messageList}" >
+                                        <div dir="#{lable.dir}" class="panel panel-default" id="orderMessages" >
+                                             <div class="panel-heading">
+                                                <h3 class="panel-title">#{lable.system_name}</h3>
+                                            </div>
+                                                <div class="panel-body"  >
+                                                    <h:messages id="contractMessages" errorStyle="color:red" />
+                                                    <br />
+                                                    <center>
+                                                    <a href="#" class="btn-info" onclick="closeMe()"> #{lable.close} </a>
+                                                    </center>
+                                                    <br />
+                                                 </div>
+                                         </div>
+
+                                    </h:panelGroup>
+                                 </h:form>
+                                   <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeScannedContracts" />
+                                       </h:commandButton>
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+                     
+                     <!-- View Archived Request Doc  -->
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='requestArchivedDownloadedFile' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading8" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" id="showArchivedFile" >
+                                 <iframe name="requestArchivedDocView" height="500" width="900" ></iframe>
+                                    <form action="/LOAN_SYSTEM/showOrginalFile" target="requestArchivedDocView" >
+                                         <input type="submit"
+                                                id="refreshArchivedFileBtn"
+                                                value="#{lable.refresh}"
+                                                class="hideMe"
+                                                />
+                                     </form>
+                                 <h:form>
+                                     <h:commandButton value="#{lable.download}"
+                                                      action="#{archiveBean.downloadFile()}"
+                                                      class="btn btn-success btn-lg btn-block"
+                                                      />
+                                 </h:form>
+                                     
+                                 <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeArchivedDownloadedFileView" />
+                                       </h:commandButton>
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+                     
+                     <!-- View Request Doc  -->
+                     <div dir="#{lable.dir}" class="panel panel-default"  id='requestDownloadedFile' style='visibility:  hidden;'>
+                         <div id="ajaxModalPanelHeading8" class="panel-heading">
+                            <h3 class="panel-title">#{lable.system_name}</h3>
+                        </div>
+                         <div class="panel-body" >
+                             <h:panelGrid columns="1" cellpadding="4px" id="showFile" >
+                                 <iframe name="requestDocView" height="500" width="900" ></iframe>
+                                    <form action="/LOAN_SYSTEM/showOrginalFile" target="requestDocView" >
+                                         <input type="submit"
+                                                id="refreshFileBtn"
+                                                value="#{lable.refresh}"
+                                                class="hideMe"
+                                                />
+                                     </form>
+                                 <h:form>
+                                     <h:commandButton value="#{lable.download}"
+                                                      action="#{Workflow.downloadFile()}"
+                                                      class="btn btn-success btn-lg btn-block"
+                                                      />
+                                 </h:form>
+                                     
+                                 <h:form>
+                                       <h:commandButton value="#{lable.close}"
+                                                        class="btn btn-danger btn-lg btn-block"
+
+                                                        >
+                                           <f:ajax event="click" onevent="closeDownloadedFileView" />
+                                       </h:commandButton>
+                                   </h:form>
+                             </h:panelGrid>
+                         </div>
+                     </div>
+                     
+                     
+                     <!-- MESSAGES -->
+                                         <h:panelGroup id="overallMsg">
+                                                <h:panelGroup rendered="#{not empty facesContext.messageList}" >
+                                                    <div dir="#{lable.dir}" class="panel panel-default" id="allMsgModal" >
+                                                         <div class="panel-heading">
+                                                            <h3 class="panel-title">#{lable.system_name}</h3>
+                                                        </div>
+                                                            <div class="panel-body"  >
+                                                                <h:messages id="allMessages" errorStyle="color:red" />
+                                                                <br />
+                                                                <center>
+                                                                <a href="#" class="btn-info" onclick="closeMeAllMsg()"> #{lable.close} </a>
+                                                                </center>
+                                                                <br />
+                                                             </div>
+                                                     </div>
+                                                     <div id='msgBackground' style="visibility: visible;" ></div>
+                                                </h:panelGroup>
+                                             
+                                         </h:panelGroup>
+                     
+                     
+                     <div id='loadingWaredover' style='visibility:  hidden;'></div>
+                
+               
+               <h:outputScript library="JS" name="bootstrap.file-input.js" />
+               <!--script>
+                   $(document).ready(function(){
+                       $('input[type=file]').bootstrapFileInput();
+                   });
+               </script-->
+</ui:composition>
